@@ -172,10 +172,7 @@ export class JwtTokenGenerator implements TokenGenerator {
       idToken["cognito:groups"] = userGroups;
     }
 
-    if (
-      this.triggers.enabled("PreTokenGenerationV1") ||
-      this.triggers.enabled("PreTokenGenerationV2")
-    ) {
+    if (this.triggers.enabled("PreTokenGenerationV1")) {
       const result = await this.triggers.preTokenGenerationV1(ctx, {
         clientId: userPoolClient.ClientId,
         clientMetadata,

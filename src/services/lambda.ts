@@ -90,36 +90,6 @@ interface PreSignUpEvent extends EventCommonParameters {
   validationData: Record<string, string> | undefined;
 }
 
-// clientId: string;
-//   userAttributes: Record<string, string>;
-//   username: string;
-//   userPoolId: string;
-
-// version: string;
-// region: string;
-// userPoolId: string;
-// triggerSource: T;
-// userName: string;
-// callerContext: {
-//     awsSdkVersion: string;
-//     clientId: string;
-// };
-// request: {};
-// response: {};
-// +
-// request: {
-//   userAttributes: StringMap;
-//   groupConfiguration: GroupOverrideDetails;
-//   clientMetadata?: StringMap | undefined;
-// };
-// response: {
-//   claimsOverrideDetails: {
-//       claimsToAddOrOverride?: StringMap | undefined;
-//       claimsToSuppress?: string[] | undefined;
-//       groupOverrideDetails?: GroupOverrideDetails | undefined;
-//   };
-// };
-
 interface PreTokenGenerationV1Event extends EventCommonParameters {
   version: "1";
   /**
@@ -254,7 +224,7 @@ export type InvokeConfig = InvokeFunctionConfig | HttpFunctionConfig;
 
 export interface Lambda {
   enabled(lambda: keyof FunctionConfig): boolean;
-  getInvokeMetod(
+  getInvokeMethod(
     invokeConfig: InvokeConfig,
     event: CognitoUserPoolEvent
   ): () => Promise<InvocationResponse>;
@@ -313,7 +283,7 @@ export class LambdaService implements Lambda {
     return !!this.config[lambda];
   }
 
-  public getInvokeMetod(
+  public getInvokeMethod(
     invokeConfig: InvokeConfig,
     event: CognitoUserPoolEvent
   ): () => Promise<InvocationResponse> {
@@ -366,7 +336,7 @@ export class LambdaService implements Lambda {
       `Triggering via adapter:"${functionConfig.adapter}"`
     );
 
-    const invokeMethod = this.getInvokeMetod(functionConfig, lambdaEvent);
+    const invokeMethod = this.getInvokeMethod(functionConfig, lambdaEvent);
     let result: InvocationResponse;
 
     try {
@@ -492,7 +462,7 @@ export class LambdaService implements Lambda {
       case "TokenGeneration_RefreshTokens": {
         if (event.version === "1") {
           const v1: PreTokenGenerationTriggerEvent = {
-            version,
+            version: "1",
             callerContext,
             region,
             userPoolId: event.userPoolId,
@@ -510,7 +480,7 @@ export class LambdaService implements Lambda {
           return v1;
         } else {
           const v2: PreTokenGenerationV2TriggerEvent = {
-            version,
+            version: "2",
             callerContext,
             region,
             userPoolId: event.userPoolId,
