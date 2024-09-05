@@ -20,7 +20,10 @@ describe("Lambda function invoker", () => {
     it("returns true if lambda is configured", () => {
       const lambda = new LambdaService(
         {
-          UserMigration: "MyLambdaName",
+          UserMigration: {
+            adapter: "invoke",
+            name: "MyLambdaName",
+          },
         },
         mockLambdaClient
       );
@@ -64,7 +67,10 @@ describe("Lambda function invoker", () => {
         } as any);
         const lambda = new LambdaService(
           {
-            UserMigration: "MyLambdaName",
+            UserMigration: {
+              adapter: "invoke",
+              name: "MyLambdaName",
+            },
           },
           mockLambdaClient
         );
@@ -93,7 +99,10 @@ describe("Lambda function invoker", () => {
         } as any);
         const lambda = new LambdaService(
           {
-            UserMigration: "MyLambdaName",
+            UserMigration: {
+              adapter: "invoke",
+              name: "MyLambdaName",
+            },
           },
           mockLambdaClient
         );
@@ -122,7 +131,10 @@ describe("Lambda function invoker", () => {
         } as any);
         const lambda = new LambdaService(
           {
-            UserMigration: "MyLambdaName",
+            UserMigration: {
+              adapter: "invoke",
+              name: "MyLambdaName",
+            },
           },
           mockLambdaClient
         );
@@ -155,7 +167,10 @@ describe("Lambda function invoker", () => {
         } as any);
         const lambda = new LambdaService(
           {
-            UserMigration: "MyLambdaName",
+            UserMigration: {
+              adapter: "invoke",
+              name: "MyLambdaName",
+            },
           },
           mockLambdaClient
         );
@@ -188,7 +203,10 @@ describe("Lambda function invoker", () => {
         } as any);
         const lambda = new LambdaService(
           {
-            UserMigration: "MyLambdaName",
+            UserMigration: {
+              adapter: "invoke",
+              name: "MyLambdaName",
+            },
           },
           mockLambdaClient
         );
@@ -223,7 +241,10 @@ describe("Lambda function invoker", () => {
         } as any);
         const lambda = new LambdaService(
           {
-            PreSignUp: "MyLambdaName",
+            PreSignUp: {
+              adapter: "invoke",
+              name: "MyLambdaName",
+            },
           },
           mockLambdaClient
         );
@@ -282,7 +303,10 @@ describe("Lambda function invoker", () => {
         } as any);
         const lambda = new LambdaService(
           {
-            UserMigration: "MyLambdaName",
+            UserMigration: {
+              adapter: "invoke",
+              name: "MyLambdaName",
+            },
           },
           mockLambdaClient
         );
@@ -344,7 +368,10 @@ describe("Lambda function invoker", () => {
         } as any);
         const lambda = new LambdaService(
           {
-            [trigger]: "MyLambdaName",
+            [trigger]: {
+              adapter: "invoke",
+              name: "MyLambdaName",
+            },
           },
           mockLambdaClient
         );
@@ -402,7 +429,10 @@ describe("Lambda function invoker", () => {
         } as any);
         const lambda = new LambdaService(
           {
-            [trigger]: "MyLambdaName",
+            [trigger]: {
+              adapter: "invoke",
+              name: "MyLambdaName",
+            },
           },
           mockLambdaClient
         );
@@ -462,12 +492,16 @@ describe("Lambda function invoker", () => {
         } as any);
         const lambda = new LambdaService(
           {
-            [trigger]: "MyLambdaName",
+            [trigger]: {
+              adapter: "invoke",
+              name: "MyLambdaName",
+            },
           },
           mockLambdaClient
         );
 
         await lambda.invoke(TestContext, trigger, {
+          version: "1",
           clientId: "clientId",
           triggerSource: source,
           username: "username",
@@ -524,7 +558,10 @@ describe("Lambda function invoker", () => {
         } as any);
         const lambda = new LambdaService(
           {
-            CustomMessage: "MyLambdaName",
+            CustomMessage: {
+              adapter: "invoke",
+              name: "MyLambdaName",
+            },
           },
           mockLambdaClient
         );
@@ -559,6 +596,7 @@ describe("Lambda function invoker", () => {
               clientMetadata: {
                 client: "metadata",
               },
+              linkParameter: "",
             },
             response: {
               smsMessage: "",
@@ -590,7 +628,10 @@ describe("Lambda function invoker", () => {
 
         const lambda = new LambdaService(
           {
-            CustomEmailSender: "MyLambdaName",
+            CustomEmailSender: {
+              adapter: "invoke",
+              name: "MyLambdaName",
+            },
           },
           mockLambdaClient
         );
