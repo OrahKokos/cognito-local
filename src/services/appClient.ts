@@ -27,15 +27,15 @@ export interface AppClient {
   /**
    * The time limit, in days, after which the refresh token is no longer valid and cannot be used.
    */
-  RefreshTokenValidity?: number;
+  RefreshTokenValidity?: number | string;
   /**
    * The time limit, specified by tokenValidityUnits, defaulting to hours, after which the access token is no longer valid and cannot be used.
    */
-  AccessTokenValidity?: number;
+  AccessTokenValidity?: number | string;
   /**
    * The time limit, specified by tokenValidityUnits, defaulting to hours, after which the refresh token is no longer valid and cannot be used.
    */
-  IdTokenValidity?: number;
+  IdTokenValidity?: number | string;
   /**
    * The time units used to specify the token validity times of their respective token.
    */

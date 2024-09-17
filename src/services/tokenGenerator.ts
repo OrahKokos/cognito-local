@@ -14,7 +14,21 @@ import {
 } from "./userPoolService";
 import { ClaimsAndScopeOverrideDetails } from "aws-lambda/trigger/cognito-user-pool-trigger/pre-token-generation-v2";
 
-type ValidityUnit = "seconds" | "minutes" | "hours" | "days" | string;
+type ValidityUnit =
+  | "milliseconds"
+  | "seconds"
+  | "minutes"
+  | "hours"
+  | "days"
+  | string;
+
+enum ValidityUnitEnum {
+  MILLISECONDS = "milliseconds",
+  SECONDS = "seconds",
+  MINUTES = "minutes",
+  HOURS = "hours",
+  DAYS = "days",
+}
 
 export interface TokenConfig {
   IssuerDomain?: string;
@@ -103,15 +117,25 @@ export interface TokenGenerator {
   ): Promise<Tokens>;
 }
 
+const isValidUnit = (unit?: ValidityUnitEnum) =>
+  unit ? Object.values(ValidityUnitEnum).includes(unit) : false;
+
 const formatExpiration = (
-  duration: number | undefined,
+  duration: string | number | undefined,
   unit: ValidityUnit,
   fallback: string
 ): string | number => {
-  if (!duration || !unit) {
+  if (duration === undefined || !isValidUnit(unit as ValidityUnitEnum)) {
     return fallback;
   }
-  if (unit === "seconds") return duration;
+  if (unit === ValidityUnitEnum.SECONDS) {
+    if (typeof duration === "string") return parseInt(duration);
+    return duration;
+  }
+  if (unit === ValidityUnitEnum.MILLISECONDS) {
+    if (typeof duration === "number") return String(duration);
+    return duration;
+  }
   return `${duration}${unit}`;
 };
 
@@ -225,25 +249,67 @@ export class JwtTokenGenerator implements TokenGenerator {
 
     const issuer = `${this.tokenConfig.IssuerDomain}/${userPoolClient.UserPoolId}`;
 
+    const AccessTokenExpireIn = formatExpiration(
+      userPoolClient.AccessTokenValidity,
+      userPoolClient.TokenValidityUnits?.AccessToken ?? "hours",
+      "24h"
+    );
+
+    const IdTokenExpireIn = formatExpiration(
+      userPoolClient.IdTokenValidity,
+      userPoolClient.TokenValidityUnits?.IdToken ?? "hours",
+      "24h"
+    );
+
+    const RefreshTokenExpireIn = formatExpiration(
+      userPoolClient.RefreshTokenValidity,
+      userPoolClient.TokenValidityUnits?.RefreshToken ?? "days",
+      "7d"
+    );
+    console.log(
+      "AccessTokenValidity",
+      userPoolClient.AccessTokenValidity,
+      typeof userPoolClient.AccessTokenValidity
+    );
+    console.log(
+      "AccessTokenValidityUnit",
+      userPoolClient.TokenValidityUnits?.AccessToken ?? "hours"
+    );
+    console.log("AccessTokenExpireIn", AccessTokenExpireIn);
+
+    console.log(
+      "IdTokenValidity",
+      userPoolClient.IdTokenValidity,
+      typeof userPoolClient.IdTokenValidity
+    );
+    console.log(
+      "IdTokenValidityUnit",
+      userPoolClient.TokenValidityUnits?.IdToken ?? "hours"
+    );
+    console.log("IdTokenExpireIn", IdTokenExpireIn);
+
+    console.log(
+      "RefreshTokenValidity",
+      userPoolClient.RefreshTokenValidity,
+      typeof userPoolClient.RefreshTokenValidity
+    );
+    console.log(
+      "RefreshTokenValidityUnit",
+      userPoolClient.TokenValidityUnits?.RefreshToken ?? "hours"
+    );
+    console.log("RefreshTokenExpireIn", RefreshTokenExpireIn);
+
     return {
       AccessToken: jwt.sign(accessToken, PrivateKey.pem, {
         algorithm: "RS256",
         issuer,
-        expiresIn: formatExpiration(
-          userPoolClient.AccessTokenValidity,
-          userPoolClient.TokenValidityUnits?.AccessToken ?? "hours",
-          "24h"
-        ),
+        expiresIn: AccessTokenExpireIn,
         keyid: "CognitoLocal",
       }),
       IdToken: jwt.sign(idToken, PrivateKey.pem, {
         algorithm: "RS256",
         issuer,
-        expiresIn: formatExpiration(
-          userPoolClient.IdTokenValidity,
-          userPoolClient.TokenValidityUnits?.IdToken ?? "hours",
-          "24h"
-        ),
+        expiresIn: IdTokenExpireIn,
         audience: userPoolClient.ClientId,
         keyid: "CognitoLocal",
       }),
@@ -260,11 +326,7 @@ export class JwtTokenGenerator implements TokenGenerator {
         {
           algorithm: "RS256",
           issuer,
-          expiresIn: formatExpiration(
-            userPoolClient.RefreshTokenValidity,
-            userPoolClient.TokenValidityUnits?.RefreshToken ?? "days",
-            "7d"
-          ),
+          expiresIn: RefreshTokenExpireIn,
         }
       ),
     };

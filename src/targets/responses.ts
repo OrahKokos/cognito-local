@@ -10,7 +10,7 @@ import { Group, User, UserPool } from "../services/userPoolService";
 export const appClientToResponseObject = (
   appClient: AppClient
 ): UserPoolClientType => ({
-  AccessTokenValidity: appClient.AccessTokenValidity,
+  AccessTokenValidity: appClient.AccessTokenValidity as number | undefined,
   AllowedOAuthFlows: appClient.AllowedOAuthFlows,
   AllowedOAuthFlowsUserPoolClient: appClient.AllowedOAuthFlowsUserPoolClient,
   AllowedOAuthScopes: appClient.AllowedOAuthScopes,
@@ -23,12 +23,12 @@ export const appClientToResponseObject = (
   DefaultRedirectURI: appClient.DefaultRedirectURI,
   EnableTokenRevocation: appClient.EnableTokenRevocation,
   ExplicitAuthFlows: appClient.ExplicitAuthFlows,
-  IdTokenValidity: appClient.IdTokenValidity,
+  IdTokenValidity: appClient.IdTokenValidity as number | undefined,
   LastModifiedDate: appClient.LastModifiedDate,
   LogoutURLs: appClient.LogoutURLs,
   PreventUserExistenceErrors: appClient.PreventUserExistenceErrors,
   ReadAttributes: appClient.ReadAttributes,
-  RefreshTokenValidity: appClient.RefreshTokenValidity,
+  RefreshTokenValidity: appClient.RefreshTokenValidity as number | undefined,
   SupportedIdentityProviders: appClient.SupportedIdentityProviders,
   TokenValidityUnits: appClient.TokenValidityUnits,
   UserPoolId: appClient.UserPoolId,
