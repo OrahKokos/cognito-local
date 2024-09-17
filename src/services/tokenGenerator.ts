@@ -107,7 +107,13 @@ const formatExpiration = (
   duration: number | undefined,
   unit: ValidityUnit,
   fallback: string
-): string => (duration ? `${duration}${unit}` : fallback);
+): string | number => {
+  if (!duration || !unit) {
+    return fallback;
+  }
+  if (unit === "seconds") return duration;
+  return `${duration}${unit}`;
+};
 
 export class JwtTokenGenerator implements TokenGenerator {
   private readonly clock: Clock;

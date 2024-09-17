@@ -518,7 +518,7 @@ describe("Lambda function invoker", () => {
           FunctionName: "MyLambdaName",
           InvocationType: "RequestResponse",
           Payload: expect.jsonMatching({
-            version: "0",
+            version: "1",
             callerContext: { awsSdkVersion: version, clientId: "clientId" },
             region: "local",
             userPoolId: "userPoolId",
